@@ -1,6 +1,6 @@
 package com.example.quizapp.data.repository
 
-import com.example.quizapp.data.local.assets.QuestionJsonParser
+import com.example.quizapp.data.local.QuestionJsonParser
 import com.example.quizapp.data.mapper.toDomain
 import com.example.quizapp.domain.model.AnswerResult
 import com.example.quizapp.domain.model.QuestionStatus

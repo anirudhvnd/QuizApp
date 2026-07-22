@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Quiz App</string>
+    <string name="quiz_master">QuizMaster</string>
+    <string name="question_progress">Question %1$d of %2$d</string>
+    <string name="correct_feedback">Correct!</string>
+    <string name="wrong_feedback">Wrong Answer</string>
+    <string name="next_question_hint">Next question coming up.</string>
+    <string name="wrong_answer_hint">The correct answer is highlighted.</string>
+    <string name="skip_question_button">Skip Question</string>
+    
+    <string name="result_quiz_completed">Quiz Completed</string>
+    <string name="result_feedback">Great effort! Here\'s how you performed.</string>
+    <string name="result_percentage">%1$d%%</string>
+    <string name="result_score">%1$d / %2$d Correct</string>
+    <string name="result_label_correct">Correct</string>
+    <string name="result_label_wrong">Wrong</string>
+    <string name="result_label_skipped">Skipped</string>
+    <string name="result_label_best_streak">Best Streak</string>
+    <string name="result_restart_button">Restart Quiz</string>
 </resources>

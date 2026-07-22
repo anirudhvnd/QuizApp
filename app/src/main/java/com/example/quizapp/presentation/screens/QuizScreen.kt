@@ -30,7 +30,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -41,19 +40,21 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.quizapp.R
 import com.example.quizapp.domain.model.Question
 import com.example.quizapp.domain.model.QuizSession
 import com.example.quizapp.presentation.screens.components.LoadingScreen
 import com.example.quizapp.presentation.screens.components.OptionButton
 import com.example.quizapp.presentation.screens.components.QuestionCard
+import com.example.quizapp.presentation.screens.components.QuizProgressIndicator
 import com.example.quizapp.presentation.state.QuizUiState
 import com.example.quizapp.presentation.viewmodels.QuizEvent
 import com.example.quizapp.presentation.viewmodels.QuizViewModel
@@ -156,15 +157,15 @@ private fun QuizContent(
                             Column {
 
                                 Text(
-                                    text = if (answerResult.isCorrect) "Correct!"
-                                    else "Wrong Answer",
+                                    text = if (answerResult.isCorrect) stringResource(R.string.correct_feedback)
+                                    else stringResource(R.string.wrong_feedback),
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold
                                 )
 
                                 Text(
-                                    text = if (answerResult.isCorrect) "Next question coming up..."
-                                    else "The correct answer is highlighted.",
+                                    text = if (answerResult.isCorrect) stringResource(R.string.next_question_hint)
+                                    else stringResource(R.string.wrong_answer_hint),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = TextSecondary
                                 )
@@ -203,13 +204,17 @@ private fun QuizContent(
                     Column {
 
                         Text(
-                            "QuizMaster",
+                            stringResource(R.string.quiz_master),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
 
                         Text(
-                            "Question ${session.currentQuestionIndex + 1}/${session.questions.size}",
+                            stringResource(
+                                R.string.question_progress,
+                                session.currentQuestionIndex + 1,
+                                session.questions.size
+                            ),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -271,15 +276,10 @@ private fun QuizContent(
 
             item {
 
-                LinearProgressIndicator(
-                    progress = {
-                    (session.currentQuestionIndex + 1).toFloat() / session.questions.size
-                },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(100)),
-                    drawStopIndicator = {})
+                QuizProgressIndicator(
+                    statuses = session.questionStatuses,
+                    currentIndex = session.currentQuestionIndex
+                )
             }
 
 
@@ -319,7 +319,8 @@ private fun QuizContent(
                 ) {
 
                     Text(
-                        "Skip Question", style = MaterialTheme.typography.bodyMedium
+                        stringResource(R.string.skip_question_button),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
 

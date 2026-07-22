@@ -1,7 +1,7 @@
 package com.example.quizapp.di
 
 import android.content.Context
-import com.example.quizapp.data.local.assets.QuestionJsonParser
+import com.example.quizapp.data.local.QuestionJsonParser
 import com.example.quizapp.data.repository.QuizRepositoryImpl
 import com.example.quizapp.domain.repository.QuizRepository
 import com.example.quizapp.domain.usecase.GetQuizResultUseCase

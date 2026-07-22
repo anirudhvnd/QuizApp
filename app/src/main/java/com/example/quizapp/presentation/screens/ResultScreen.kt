@@ -22,10 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.example.quizapp.R
 import com.example.quizapp.presentation.viewmodels.ResultViewModel
 import com.example.quizapp.ui.theme.Accent
 import com.example.quizapp.ui.theme.Correct
@@ -64,7 +66,7 @@ fun ResultScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Quiz Completed",
+            text = stringResource(R.string.result_quiz_completed),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
@@ -72,7 +74,7 @@ fun ResultScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Great effort! Here's how you performed.",
+            text = stringResource(R.string.result_feedback),
             style = MaterialTheme.typography.bodyMedium,
             color = TextSecondary
         )
@@ -80,14 +82,14 @@ fun ResultScreen(
         Spacer(modifier = Modifier.height(36.dp))
 
         Text(
-            text = "${result.percentage}%",
+            text = stringResource(R.string.result_percentage, result.percentage),
             style = MaterialTheme.typography.displayLarge,
             fontWeight = FontWeight.Bold,
             color = Accent
         )
 
         Text(
-            text = "${result.correctAnswers} / 10 Correct",
+            text = stringResource(R.string.result_score, result.correctAnswers, 10),
             style = MaterialTheme.typography.titleMedium,
             color = TextSecondary
         )
@@ -107,13 +109,29 @@ fun ResultScreen(
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
 
-                ResultItem("✅ Correct", result.correctAnswers.toString(), Correct)
+                ResultItem(
+                    stringResource(R.string.result_label_correct),
+                    result.correctAnswers.toString(),
+                    Correct
+                )
 
-                ResultItem("❌ Wrong", result.wrongAnswers.toString(), Wrong)
+                ResultItem(
+                    stringResource(R.string.result_label_wrong),
+                    result.wrongAnswers.toString(),
+                    Wrong
+                )
 
-                ResultItem("⏭ Skipped", result.skippedQuestions.toString(), Accent)
+                ResultItem(
+                    stringResource(R.string.result_label_skipped),
+                    result.skippedQuestions.toString(),
+                    Accent
+                )
 
-                ResultItem("🔥 Best Streak", result.longestStreak.toString(), Accent)
+                ResultItem(
+                    stringResource(R.string.result_label_best_streak),
+                    result.longestStreak.toString(),
+                    Accent
+                )
             }
         }
 
@@ -125,7 +143,7 @@ fun ResultScreen(
             shape = RoundedCornerShape(18.dp)
         ) {
             Text(
-                "Restart Quiz",
+                stringResource(R.string.result_restart_button),
                 modifier = Modifier.padding(vertical = 6.dp),
                 style = MaterialTheme.typography.titleSmall
             )

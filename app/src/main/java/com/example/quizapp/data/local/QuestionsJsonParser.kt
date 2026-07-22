@@ -1,4 +1,4 @@
-package com.example.quizapp.data.local.assets
+package com.example.quizapp.data.local
 
 import android.content.Context
 import com.example.quizapp.data.model.QuestionDto
@@ -10,10 +10,7 @@ class QuestionJsonParser @Inject constructor(
 ) {
 
     fun loadQuestions(): List<QuestionDto> {
-        val json = context.assets
-            .open("questions.json")
-            .bufferedReader()
-            .use { it.readText() }
+        val json = context.assets.open("questions.json").bufferedReader().use { it.readText() }
 
         return Json.decodeFromString(json)
     }
