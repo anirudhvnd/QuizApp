@@ -4,6 +4,14 @@ import android.content.Context
 import com.example.quizapp.data.local.assets.QuestionJsonParser
 import com.example.quizapp.data.repository.QuizRepositoryImpl
 import com.example.quizapp.domain.repository.QuizRepository
+import com.example.quizapp.domain.usecase.GetQuizResultUseCase
+import com.example.quizapp.domain.usecase.GetQuizSessionUseCase
+import com.example.quizapp.domain.usecase.HasNextQuestionUseCase
+import com.example.quizapp.domain.usecase.InitializeQuizUseCase
+import com.example.quizapp.domain.usecase.MoveToNextQuestionUseCase
+import com.example.quizapp.domain.usecase.QuizUseCases
+import com.example.quizapp.domain.usecase.SkipQuestionUseCase
+import com.example.quizapp.domain.usecase.SubmitAnswerUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,4 +38,30 @@ object AppModule {
     ): QuizRepository {
         return QuizRepositoryImpl(parser)
     }
+
+    @Provides
+    @Singleton
+    fun provideQuizUseCases(
+        initializeQuiz: InitializeQuizUseCase,
+        getQuizSession: GetQuizSessionUseCase,
+        submitAnswer: SubmitAnswerUseCase,
+        skipQuestion: SkipQuestionUseCase,
+        moveToNextQuestion: MoveToNextQuestionUseCase,
+        hasNextQuestion: HasNextQuestionUseCase,
+        getQuizResult: GetQuizResultUseCase
+    ) = QuizUseCases(
+        initializeQuiz,
+        getQuizSession,
+        submitAnswer,
+        skipQuestion,
+        moveToNextQuestion,
+        hasNextQuestion,
+        getQuizResult
+    )
+
+    @Provides
+    @Singleton
+    fun provideGetQuizResultUseCase(
+        quizRepository: QuizRepository
+    ) = GetQuizResultUseCase(quizRepository)
 }
