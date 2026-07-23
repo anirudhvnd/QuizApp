@@ -20,4 +20,15 @@
 
     <string name="something_went_wrong">Something went wrong</string>
     <string name="try_again">Try Again</string>
+
+    <string name="checkmark">✓</string>
+    <string name="crossmark">✕</string>
+    <string name="perfect_finish">Perfect finish! Showing your results.</string>
+    <string name="review_complete">Review complete. Showing your results.</string>
+    <string name="correct_answer_was">Correct answer: %1$s</string>
+    <string name="next_question_coming">Great job! Next question coming up.</string>
+    <string name="fire_emoji">🔥</string>
+    <string name="warning_emoji">⚠️</string>
+    <string name="trophy_emoji">🏆</string>
+    <string name="streak_count">%1$d</string>
 </resources>

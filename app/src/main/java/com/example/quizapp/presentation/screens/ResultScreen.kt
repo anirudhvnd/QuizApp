@@ -55,7 +55,7 @@ fun ResultScreen(
             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
         ) {
             Text(
-                text = "🏆",
+                text = stringResource(R.string.trophy_emoji),
                 fontSize = 52.sp,
                 modifier = Modifier.padding(24.dp)
             )

@@ -40,7 +40,7 @@ fun ErrorScreen(
             shape = CircleShape, color = Wrong.copy(alpha = 0.12f)
         ) {
             Text(
-                text = "⚠️", fontSize = 52.sp, modifier = Modifier.padding(24.dp)
+                text = stringResource(R.string.warning_emoji), fontSize = 52.sp, modifier = Modifier.padding(24.dp)
             )
         }
 

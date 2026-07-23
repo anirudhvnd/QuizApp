@@ -29,7 +29,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -40,6 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -106,6 +109,7 @@ private fun QuizContent(
             if (uiState.showAnswerOverlay) {
 
                 val answerResult = requireNotNull(uiState.answerResult)
+                val isLastQuestion = session.currentQuestionIndex == session.questions.lastIndex
 
                 AnimatedVisibility(
                     visible = true,
@@ -115,56 +119,106 @@ private fun QuizContent(
                     ElevatedCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(20.dp),
-                        shape = RoundedCornerShape(24.dp)
+                            .padding(16.dp),
+                        shape = RoundedCornerShape(28.dp),
+                        colors = CardDefaults.elevatedCardColors(
+                            containerColor = MaterialTheme.colorScheme.surface
+                        )
                     ) {
 
-                        Row(
-                            modifier = Modifier.padding(20.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            modifier = Modifier.padding(20.dp)
                         ) {
 
-                            Surface(
-                                modifier = Modifier.size(52.dp),
-                                shape = CircleShape,
-                                color = if (answerResult.isCorrect) Correct.copy(alpha = .15f)
-                                else Wrong.copy(alpha = .15f)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
 
-                                Box(
-                                    contentAlignment = Alignment.Center
+                                Surface(
+                                    modifier = Modifier.size(54.dp),
+                                    shape = CircleShape,
+                                    color = if (answerResult.isCorrect) Correct.copy(alpha = 0.12f)
+                                    else Wrong.copy(alpha = 0.12f)
+                                ) {
+
+                                    Box(
+                                        contentAlignment = Alignment.Center
+                                    ) {
+
+                                        Text(
+                                            text = if (answerResult.isCorrect) stringResource(R.string.checkmark)
+                                            else stringResource(R.string.crossmark),
+
+                                            color = if (answerResult.isCorrect) Correct
+                                            else Wrong,
+
+                                            fontSize = 28.sp, fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+
+
+                                Spacer(
+                                    Modifier.width(16.dp)
+                                )
+
+
+                                Column(
+                                    modifier = Modifier.weight(1f)
                                 ) {
 
                                     Text(
-                                        text = if (answerResult.isCorrect) "✓" else "✕",
-                                        color = if (answerResult.isCorrect) Correct
-                                        else Wrong,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 24.sp
+                                        text = if (answerResult.isCorrect) stringResource(R.string.correct_feedback)
+                                        else stringResource(R.string.wrong_feedback),
+
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Bold
+                                    )
+
+
+                                    Spacer(
+                                        Modifier.height(4.dp)
+                                    )
+
+
+                                    Text(
+                                        text = when {
+                                            isLastQuestion && answerResult.isCorrect -> stringResource(R.string.perfect_finish)
+
+                                            isLastQuestion && !answerResult.isCorrect -> stringResource(R.string.review_complete)
+
+                                            !answerResult.isCorrect -> stringResource(
+                                                R.string.correct_answer_was,
+                                                question.options[answerResult.correctOptionIndex]
+                                            )
+
+                                            else -> stringResource(R.string.next_question_coming)
+                                        },
+
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }
 
 
-                            Spacer(Modifier.width(16.dp))
+                            Spacer(
+                                Modifier.height(16.dp)
+                            )
 
 
-                            Column {
+                            LinearProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(5.dp)
+                                    .clip(
+                                        RoundedCornerShape(50)
+                                    ),
 
-                                Text(
-                                    text = if (answerResult.isCorrect) stringResource(R.string.correct_feedback)
-                                    else stringResource(R.string.wrong_feedback),
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Bold
-                                )
-
-                                Text(
-                                    text = if (answerResult.isCorrect) stringResource(R.string.next_question_hint)
-                                    else stringResource(R.string.wrong_answer_hint),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
+                                color = if (isLastQuestion) Accent
+                                else if (answerResult.isCorrect) Correct
+                                else Wrong
+                            )
                         }
                     }
                 }
@@ -238,7 +292,7 @@ private fun QuizContent(
                                 ), verticalAlignment = Alignment.CenterVertically
                             ) {
 
-                                Text(text = "🔥")
+                                Text(text = stringResource(R.string.fire_emoji))
 
                                 Spacer(Modifier.width(4.dp))
 
@@ -247,7 +301,7 @@ private fun QuizContent(
                                 ) { streak ->
 
                                     Text(
-                                        text = "$streak", fontWeight = FontWeight.Bold
+                                        text = stringResource(R.string.streak_count, streak), fontWeight = FontWeight.Bold
                                     )
                                 }
                             }
