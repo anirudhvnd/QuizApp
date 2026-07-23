@@ -17,7 +17,6 @@ import javax.inject.Inject
 class QuizViewModel @Inject constructor(
     private val useCases: QuizUseCases
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow<QuizUiState>(QuizUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
@@ -39,7 +38,6 @@ class QuizViewModel @Inject constructor(
     }
 
     fun onAnswerSelected(index: Int) {
-
         val state = _uiState.value as? QuizUiState.Success ?: return
         val answer = useCases.submitAnswer(index)
 
@@ -48,7 +46,6 @@ class QuizViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-
             delay(2000)
             if (useCases.hasNextQuestion()) {
                 useCases.moveToNextQuestion()

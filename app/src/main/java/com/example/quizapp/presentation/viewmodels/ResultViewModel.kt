@@ -9,6 +9,5 @@ import javax.inject.Inject
 class ResultViewModel @Inject constructor(
     getQuizResultUseCase: GetQuizResultUseCase
 ) : ViewModel() {
-
     val result = getQuizResultUseCase.invoke()
 }

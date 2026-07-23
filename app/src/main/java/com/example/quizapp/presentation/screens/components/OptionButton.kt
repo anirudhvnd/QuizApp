@@ -36,7 +36,6 @@ fun OptionButton(
     isCorrect: Boolean,
     onClick: () -> Unit
 ) {
-
     val containerColor = when {
         isCorrect -> Color(0xFFB8F5C2)
         isSelected -> Color(0xFFFFD6D6)
@@ -55,14 +54,12 @@ fun OptionButton(
             containerColor = containerColor
         )
     ) {
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(18.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -70,7 +67,6 @@ fun OptionButton(
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
             ) {
-
                 Text(
                     text = optionLetter,
                     style = MaterialTheme.typography.titleMedium,

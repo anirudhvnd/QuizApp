@@ -4,7 +4,6 @@ import com.example.quizapp.domain.model.AnswerResult
 import com.example.quizapp.domain.model.QuizSession
 
 sealed interface QuizUiState {
-
     data object Loading : QuizUiState
 
     data class Success(
@@ -14,5 +13,4 @@ sealed interface QuizUiState {
     ) : QuizUiState
 
     data object Error : QuizUiState
-
 }

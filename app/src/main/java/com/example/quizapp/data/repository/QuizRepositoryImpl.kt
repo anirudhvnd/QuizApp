@@ -12,11 +12,9 @@ import javax.inject.Inject
 class QuizRepositoryImpl @Inject constructor(
     private val parser: QuestionJsonParser
 ) : QuizRepository {
-
     private lateinit var session: QuizSession
 
     override fun initializeQuiz(): Result<Unit> {
-
         return runCatching {
             val questions = parser
                 .loadQuestions()
@@ -42,7 +40,6 @@ class QuizRepositoryImpl @Inject constructor(
     override fun submitAnswer(
         selectedOptionIndex: Int
     ): AnswerResult {
-
         val question = session.questions[session.currentQuestionIndex]
 
         val isCorrect = selectedOptionIndex == question.correctOptionIndex
@@ -77,7 +74,6 @@ class QuizRepositoryImpl @Inject constructor(
     }
 
     override fun skipQuestion() {
-
         val updatedStatuses = session.questionStatuses.toMutableList()
 
         updatedStatuses[session.currentQuestionIndex] = QuestionStatus.SKIPPED
@@ -90,7 +86,6 @@ class QuizRepositoryImpl @Inject constructor(
     }
 
     override fun moveToNextQuestion() {
-
         if (hasNextQuestion()) {
             session = session.copy(
                 currentQuestionIndex = session.currentQuestionIndex + 1
@@ -103,7 +98,6 @@ class QuizRepositoryImpl @Inject constructor(
     }
 
     override fun getQuizResult(): QuizResult {
-
         val percentage =
             (session.correctAnswers * 100) / session.questions.size
 

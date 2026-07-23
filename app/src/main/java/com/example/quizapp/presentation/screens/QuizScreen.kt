@@ -103,9 +103,9 @@ private fun QuizContent(
     onAnswerClick: (Int) -> Unit,
     onSkipClick: () -> Unit
 ) {
-
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background, bottomBar = {
+        containerColor = MaterialTheme.colorScheme.background,
+        bottomBar = {
             if (uiState.showAnswerOverlay) {
 
                 val answerResult = requireNotNull(uiState.answerResult)
@@ -224,9 +224,7 @@ private fun QuizContent(
                 }
             }
         }
-
     ) { padding ->
-
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -236,19 +234,15 @@ private fun QuizContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             userScrollEnabled = !uiState.showAnswerOverlay
         ) {
-
             item { Spacer(Modifier.height(20.dp)) }
 
             item {
-
                 Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
                     Column {
-
                         Text(
                             stringResource(R.string.quiz_master),
                             style = MaterialTheme.typography.headlineSmall,
@@ -269,7 +263,6 @@ private fun QuizContent(
                         enter = scaleIn() + fadeIn(),
                         exit = scaleOut() + fadeOut()
                     ) {
-
                         val infiniteTransition = rememberInfiniteTransition()
 
                         val pulseScale = infiniteTransition.animateFloat(
@@ -285,13 +278,11 @@ private fun QuizContent(
                             shape = RoundedCornerShape(50),
                             color = Accent.copy(alpha = 0.15f)
                         ) {
-
                             Row(
                                 modifier = Modifier.padding(
                                     horizontal = 16.dp, vertical = 8.dp
                                 ), verticalAlignment = Alignment.CenterVertically
                             ) {
-
                                 Text(text = stringResource(R.string.fire_emoji))
 
                                 Spacer(Modifier.width(4.dp))
@@ -299,7 +290,6 @@ private fun QuizContent(
                                 AnimatedContent(
                                     targetState = session.currentStreak, label = "streak_count"
                                 ) { streak ->
-
                                     Text(
                                         text = stringResource(R.string.streak_count, streak), fontWeight = FontWeight.Bold
                                     )
@@ -338,7 +328,6 @@ private fun QuizContent(
             }
 
             item {
-
                 TextButton(
                     onClick = onSkipClick,
                     enabled = !uiState.showAnswerOverlay,

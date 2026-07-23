@@ -27,7 +27,6 @@ import com.example.quizapp.ui.theme.Wrong
 fun ErrorScreen(
     onRetry: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,7 +34,6 @@ fun ErrorScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Surface(
             shape = CircleShape, color = Wrong.copy(alpha = 0.12f)
         ) {

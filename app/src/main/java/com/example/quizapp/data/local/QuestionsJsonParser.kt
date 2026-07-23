@@ -8,9 +8,10 @@ import javax.inject.Inject
 class QuestionJsonParser @Inject constructor(
     private val context: Context
 ) {
-
     fun loadQuestions(): List<QuestionDto> {
-        val json = context.assets.open("questions.json").bufferedReader().use { it.readText() }
+        val json = context.assets.open("questions.json")
+            .bufferedReader()
+            .use { it.readText() }
 
         return Json.decodeFromString(json)
     }

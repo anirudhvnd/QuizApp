@@ -36,7 +36,6 @@ fun ResultScreen(
     onRestart: () -> Unit,
     viewModel: ResultViewModel = hiltViewModel()
 ) {
-
     val result = viewModel.result
 
     Column(
@@ -47,7 +46,6 @@ fun ResultScreen(
             .padding(horizontal = 24.dp, vertical = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Spacer(modifier = Modifier.height(40.dp))
 
         Surface(
@@ -102,12 +100,10 @@ fun ResultScreen(
                 containerColor = MaterialTheme.colorScheme.surface
             )
         ) {
-
             Column(
                 modifier = Modifier.padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-
                 ResultItem(
                     stringResource(R.string.result_label_correct),
                     result.correctAnswers.toString(),

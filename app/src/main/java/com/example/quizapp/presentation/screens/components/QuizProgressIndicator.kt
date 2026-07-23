@@ -3,6 +3,7 @@ package com.example.quizapp.presentation.screens.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -23,12 +24,10 @@ fun QuizProgressIndicator(
     statuses: List<QuestionStatus>,
     currentIndex: Int
 ) {
-
     Row(
         modifier = Modifier.width(340.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-
         statuses.forEachIndexed { index, status ->
 
             val scale by animateFloatAsState(
@@ -36,7 +35,7 @@ fun QuizProgressIndicator(
                 label = "progress_scale"
             )
 
-            androidx.compose.foundation.layout.Box(
+            Box(
                 modifier = Modifier
                     .weight(1f)
                     .height(8.dp)
