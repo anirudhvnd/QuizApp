@@ -3,9 +3,16 @@ package com.example.quizapp.presentation.state
 import com.example.quizapp.domain.model.AnswerResult
 import com.example.quizapp.domain.model.QuizSession
 
-data class QuizUiState(
-    val isLoading: Boolean = true,
-    val session: QuizSession? = null,
-    val answerResult: AnswerResult? = null,
-    val showAnswerOverlay: Boolean = false
-)
+sealed interface QuizUiState {
+
+    data object Loading : QuizUiState
+
+    data class Success(
+        val session: QuizSession,
+        val answerResult: AnswerResult? = null,
+        val showAnswerOverlay: Boolean = false
+    ) : QuizUiState
+
+    data object Error : QuizUiState
+
+}

@@ -17,4 +17,7 @@
     <string name="result_label_skipped">Skipped</string>
     <string name="result_label_best_streak">Best Streak</string>
     <string name="result_restart_button">Restart Quiz</string>
+
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="try_again">Try Again</string>
 </resources>

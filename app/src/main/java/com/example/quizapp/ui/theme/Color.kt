@@ -19,3 +19,15 @@ val Border = Color(0xFFE5E7EB)
 val Correct = Color(0xFF22C55E)
 
 val Wrong = Color(0xFFEF4444)
+
+val DarkBackground = Color(0xFF0F1115)
+
+val DarkSurface = Color(0xFF171A21)
+
+val DarkSurfaceAlt = Color(0xFF232834)
+
+val DarkTextPrimary = Color(0xFFF5F5F5)
+
+val DarkTextSecondary = Color(0xFFA7AFBC)
+
+val DarkBorder = Color(0xFF343A46)

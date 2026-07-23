@@ -15,24 +15,26 @@ class QuizRepositoryImpl @Inject constructor(
 
     private lateinit var session: QuizSession
 
-    override fun initializeQuiz() {
+    override fun initializeQuiz(): Result<Unit> {
 
-        val questions = parser
-            .loadQuestions()
-            .map { it.toDomain() }
+        return runCatching {
+            val questions = parser
+                .loadQuestions()
+                .map { it.toDomain() }
 
-        session = QuizSession(
-            questions = questions,
-            currentQuestionIndex = 0,
-            correctAnswers = 0,
-            wrongAnswers = 0,
-            skippedQuestions = 0,
-            currentStreak = 0,
-            longestStreak = 0,
-            questionStatuses = List(questions.size) {
-                QuestionStatus.UNANSWERED
-            }
-        )
+            session = QuizSession(
+                questions = questions,
+                currentQuestionIndex = 0,
+                correctAnswers = 0,
+                wrongAnswers = 0,
+                skippedQuestions = 0,
+                currentStreak = 0,
+                longestStreak = 0,
+                questionStatuses = List(questions.size) {
+                    QuestionStatus.UNANSWERED
+                }
+            )
+        }
     }
 
     override fun getQuizSession(): QuizSession = session

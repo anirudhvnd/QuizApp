@@ -41,7 +41,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,6 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.quizapp.R
 import com.example.quizapp.domain.model.Question
 import com.example.quizapp.domain.model.QuizSession
+import com.example.quizapp.presentation.screens.components.ErrorScreen
 import com.example.quizapp.presentation.screens.components.LoadingScreen
 import com.example.quizapp.presentation.screens.components.OptionButton
 import com.example.quizapp.presentation.screens.components.QuestionCard
@@ -60,7 +60,6 @@ import com.example.quizapp.presentation.viewmodels.QuizEvent
 import com.example.quizapp.presentation.viewmodels.QuizViewModel
 import com.example.quizapp.ui.theme.Accent
 import com.example.quizapp.ui.theme.Correct
-import com.example.quizapp.ui.theme.TextSecondary
 import com.example.quizapp.ui.theme.Wrong
 
 @Composable
@@ -77,26 +76,25 @@ fun QuizScreen(
         }
     }
 
-    if (uiState.isLoading) {
-        LoadingScreen()
-        return
+    when (val state = uiState) {
+        QuizUiState.Loading -> LoadingScreen()
+        is QuizUiState.Success -> QuizContent(
+            uiState = state,
+            session = state.session,
+            question = state.session.questions[state.session.currentQuestionIndex],
+            onAnswerClick = viewModel::onAnswerSelected,
+            onSkipClick = viewModel::onSkip
+        )
+
+        QuizUiState.Error -> ErrorScreen(
+            onRetry = { viewModel.loadQuiz() }
+        )
     }
-
-    val session = uiState.session ?: return
-    val question = session.questions[session.currentQuestionIndex]
-
-    QuizContent(
-        uiState = uiState,
-        session = session,
-        question = question,
-        onAnswerClick = viewModel::onAnswerSelected,
-        onSkipClick = viewModel::onSkip
-    )
 }
 
 @Composable
 private fun QuizContent(
-    uiState: QuizUiState,
+    uiState: QuizUiState.Success,
     session: QuizSession,
     question: Question,
     onAnswerClick: (Int) -> Unit,
@@ -104,10 +102,7 @@ private fun QuizContent(
 ) {
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-
-        bottomBar = {
-
+        containerColor = MaterialTheme.colorScheme.background, bottomBar = {
             if (uiState.showAnswerOverlay) {
 
                 val answerResult = requireNotNull(uiState.answerResult)
@@ -167,7 +162,7 @@ private fun QuizContent(
                                     text = if (answerResult.isCorrect) stringResource(R.string.next_question_hint)
                                     else stringResource(R.string.wrong_answer_hint),
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = TextSecondary
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
@@ -177,7 +172,6 @@ private fun QuizContent(
         }
 
     ) { padding ->
-
 
         LazyColumn(
             modifier = Modifier
@@ -189,9 +183,7 @@ private fun QuizContent(
             userScrollEnabled = !uiState.showAnswerOverlay
         ) {
 
-
             item { Spacer(Modifier.height(20.dp)) }
-
 
             item {
 
@@ -214,8 +206,7 @@ private fun QuizContent(
                                 R.string.question_progress,
                                 session.currentQuestionIndex + 1,
                                 session.questions.size
-                            ),
-                            style = MaterialTheme.typography.bodyMedium
+                            ), style = MaterialTheme.typography.bodyMedium
                         )
                     }
 
@@ -231,8 +222,7 @@ private fun QuizContent(
                             initialValue = 1f,
                             targetValue = 1.08f,
                             animationSpec = infiniteRepeatable(
-                                animation = tween(700),
-                                repeatMode = RepeatMode.Reverse
+                                animation = tween(700), repeatMode = RepeatMode.Reverse
                             )
                         )
 
@@ -244,10 +234,8 @@ private fun QuizContent(
 
                             Row(
                                 modifier = Modifier.padding(
-                                    horizontal = 16.dp,
-                                    vertical = 8.dp
-                                ),
-                                verticalAlignment = Alignment.CenterVertically
+                                    horizontal = 16.dp, vertical = 8.dp
+                                ), verticalAlignment = Alignment.CenterVertically
                             ) {
 
                                 Text(text = "🔥")
@@ -255,13 +243,11 @@ private fun QuizContent(
                                 Spacer(Modifier.width(4.dp))
 
                                 AnimatedContent(
-                                    targetState = session.currentStreak,
-                                    label = "streak_count"
+                                    targetState = session.currentStreak, label = "streak_count"
                                 ) { streak ->
 
                                     Text(
-                                        text = "$streak",
-                                        fontWeight = FontWeight.Bold
+                                        text = "$streak", fontWeight = FontWeight.Bold
                                     )
                                 }
                             }
@@ -270,32 +256,23 @@ private fun QuizContent(
                 }
             }
 
-
             item { Spacer(Modifier.height(20.dp)) }
 
-
             item {
-
                 QuizProgressIndicator(
-                    statuses = session.questionStatuses,
-                    currentIndex = session.currentQuestionIndex
+                    statuses = session.questionStatuses, currentIndex = session.currentQuestionIndex
                 )
             }
 
-
             item { Spacer(Modifier.height(28.dp)) }
-
 
             item {
                 QuestionCard(question.question)
             }
 
-
             item { Spacer(Modifier.height(28.dp)) }
 
-
             itemsIndexed(question.options) { index, option ->
-
                 OptionButton(
                     text = option,
                     optionLetter = ('A' + index).toString(),
@@ -303,10 +280,8 @@ private fun QuizContent(
                     isSelected = uiState.answerResult?.selectedOptionIndex == index,
                     isCorrect = uiState.answerResult?.correctOptionIndex == index,
                     onClick = { onAnswerClick(index) })
-
                 Spacer(Modifier.height(14.dp))
             }
-
 
             item {
 
@@ -314,16 +289,14 @@ private fun QuizContent(
                     onClick = onSkipClick,
                     enabled = !uiState.showAnswerOverlay,
                     colors = ButtonDefaults.textButtonColors(
-                        contentColor = Color.Black
+                        contentColor = MaterialTheme.colorScheme.onBackground
                     )
                 ) {
-
                     Text(
                         stringResource(R.string.skip_question_button),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
-
 
                 Spacer(Modifier.height(20.dp))
             }

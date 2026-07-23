@@ -1,5 +1,6 @@
 package com.example.quizapp.presentation.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,10 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.quizapp.R
 import com.example.quizapp.presentation.viewmodels.ResultViewModel
-import com.example.quizapp.ui.theme.Accent
-import com.example.quizapp.ui.theme.Correct
-import com.example.quizapp.ui.theme.TextSecondary
-import com.example.quizapp.ui.theme.Wrong
 
 @Composable
 fun ResultScreen(
@@ -45,6 +42,7 @@ fun ResultScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp, vertical = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -54,7 +52,7 @@ fun ResultScreen(
 
         Surface(
             shape = CircleShape,
-            color = Accent.copy(alpha = 0.12f)
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
         ) {
             Text(
                 text = "🏆",
@@ -68,7 +66,8 @@ fun ResultScreen(
         Text(
             text = stringResource(R.string.result_quiz_completed),
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -76,7 +75,7 @@ fun ResultScreen(
         Text(
             text = stringResource(R.string.result_feedback),
             style = MaterialTheme.typography.bodyMedium,
-            color = TextSecondary
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Spacer(modifier = Modifier.height(36.dp))
@@ -85,13 +84,13 @@ fun ResultScreen(
             text = stringResource(R.string.result_percentage, result.percentage),
             style = MaterialTheme.typography.displayLarge,
             fontWeight = FontWeight.Bold,
-            color = Accent
+            color = MaterialTheme.colorScheme.primary
         )
 
         Text(
             text = stringResource(R.string.result_score, result.correctAnswers, 10),
             style = MaterialTheme.typography.titleMedium,
-            color = TextSecondary
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Spacer(modifier = Modifier.height(36.dp))
@@ -112,25 +111,26 @@ fun ResultScreen(
                 ResultItem(
                     stringResource(R.string.result_label_correct),
                     result.correctAnswers.toString(),
-                    Correct
+                    MaterialTheme.colorScheme.primary
                 )
 
                 ResultItem(
                     stringResource(R.string.result_label_wrong),
                     result.wrongAnswers.toString(),
-                    Wrong
+                    MaterialTheme.colorScheme.error
+
                 )
 
                 ResultItem(
                     stringResource(R.string.result_label_skipped),
                     result.skippedQuestions.toString(),
-                    Accent
+                    MaterialTheme.colorScheme.primary
                 )
 
                 ResultItem(
                     stringResource(R.string.result_label_best_streak),
                     result.longestStreak.toString(),
-                    Accent
+                    MaterialTheme.colorScheme.primary
                 )
             }
         }
