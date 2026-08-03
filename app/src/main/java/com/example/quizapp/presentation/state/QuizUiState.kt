@@ -10,7 +10,8 @@ sealed interface QuizUiState {
     data class Success(
         val session: QuizSession,
         val answerResult: AnswerResult? = null,
-        val showAnswerOverlay: Boolean = false
+        val showAnswerOverlay: Boolean = false,
+        val showResumeBanner: Boolean = false,
     ) : QuizUiState
 
     data class Error(

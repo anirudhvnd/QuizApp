@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetQuizSessionUseCase @Inject constructor(
     private val repository: QuizRepository
 ) {
-    operator fun invoke(): QuizSession {
+    suspend operator fun invoke(): QuizSession? {
         return repository.getQuizSession()
     }
 }

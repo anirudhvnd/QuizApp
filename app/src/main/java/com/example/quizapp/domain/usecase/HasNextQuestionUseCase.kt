@@ -6,7 +6,7 @@ import javax.inject.Inject
 class HasNextQuestionUseCase @Inject constructor(
     private val repository: QuizRepository
 ) {
-    operator fun invoke(): Boolean {
+    suspend operator fun invoke(): Boolean {
         return repository.hasNextQuestion()
     }
 }

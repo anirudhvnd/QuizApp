@@ -94,27 +94,22 @@ fun QuizScreen(
             val (title, message) = when (state.error) {
 
                 QuizError.NoInternet -> {
-                    "No Internet Connection" to
-                            "Please connect to the internet and try again."
+                    "No Internet Connection" to "Please connect to the internet and try again."
                 }
 
                 QuizError.ServerError -> {
-                    "Unable to Load Quiz" to
-                            "We're having trouble reaching the server right now."
+                    "Unable to Load Quiz" to "We're having trouble reaching the server right now."
                 }
 
                 is QuizError.Unknown -> {
-                    "Something Went Wrong" to
-                            (state.error.message.ifBlank {
-                                "An unexpected error occurred."
-                            })
+                    "Something Went Wrong" to (state.error.message.ifBlank {
+                        "An unexpected error occurred."
+                    })
                 }
             }
 
             ErrorScreen(
-                title = title,
-                message = message,
-                onRetry = viewModel::loadQuiz
+                title = title, message = message, onRetry = viewModel::loadQuiz
             )
         }
     }
@@ -129,8 +124,7 @@ private fun QuizContent(
     onSkipClick: () -> Unit
 ) {
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
+        containerColor = MaterialTheme.colorScheme.background, bottomBar = {
             if (uiState.showAnswerOverlay) {
 
                 val answerResult = requireNotNull(uiState.answerResult)
@@ -208,9 +202,13 @@ private fun QuizContent(
 
                                     Text(
                                         text = when {
-                                            isLastQuestion && answerResult.isCorrect -> stringResource(R.string.perfect_finish)
+                                            isLastQuestion && answerResult.isCorrect -> stringResource(
+                                                R.string.perfect_finish
+                                            )
 
-                                            isLastQuestion && !answerResult.isCorrect -> stringResource(R.string.review_complete)
+                                            isLastQuestion && !answerResult.isCorrect -> stringResource(
+                                                R.string.review_complete
+                                            )
 
                                             !answerResult.isCorrect -> stringResource(
                                                 R.string.correct_answer_was,
@@ -248,126 +246,164 @@ private fun QuizContent(
                     }
                 }
             }
-        }
-    ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp),
-
-            horizontalAlignment = Alignment.CenterHorizontally,
-            userScrollEnabled = !uiState.showAnswerOverlay
+        }) { padding ->
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            item { Spacer(Modifier.height(20.dp)) }
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 20.dp),
 
-            item {
-                Row(
-                    Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            stringResource(R.string.quiz_master),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold
-                        )
+                horizontalAlignment = Alignment.CenterHorizontally,
+                userScrollEnabled = !uiState.showAnswerOverlay
+            ) {
+                item { Spacer(Modifier.height(20.dp)) }
 
-                        Text(
-                            stringResource(
-                                R.string.question_progress,
-                                session.currentQuestionIndex + 1,
-                                session.questions.size
-                            ), style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-
-                    AnimatedVisibility(
-                        visible = session.currentStreak >= 3,
-                        enter = scaleIn() + fadeIn(),
-                        exit = scaleOut() + fadeOut()
+                item {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val infiniteTransition = rememberInfiniteTransition()
-
-                        val pulseScale = infiniteTransition.animateFloat(
-                            initialValue = 1f,
-                            targetValue = 1.08f,
-                            animationSpec = infiniteRepeatable(
-                                animation = tween(700), repeatMode = RepeatMode.Reverse
+                        Column {
+                            Text(
+                                stringResource(R.string.quiz_master),
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold
                             )
-                        )
 
-                        Surface(
-                            modifier = Modifier.scale(pulseScale.value),
-                            shape = RoundedCornerShape(50),
-                            color = Accent.copy(alpha = 0.15f)
+                            Text(
+                                stringResource(
+                                    R.string.question_progress,
+                                    session.currentQuestionIndex + 1,
+                                    session.questions.size
+                                ), style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        AnimatedVisibility(
+                            visible = session.currentStreak >= 3,
+                            enter = scaleIn() + fadeIn(),
+                            exit = scaleOut() + fadeOut()
                         ) {
-                            Row(
-                                modifier = Modifier.padding(
-                                    horizontal = 16.dp, vertical = 8.dp
-                                ), verticalAlignment = Alignment.CenterVertically
+                            val infiniteTransition = rememberInfiniteTransition()
+
+                            val pulseScale = infiniteTransition.animateFloat(
+                                initialValue = 1f,
+                                targetValue = 1.08f,
+                                animationSpec = infiniteRepeatable(
+                                    animation = tween(700), repeatMode = RepeatMode.Reverse
+                                )
+                            )
+
+                            Surface(
+                                modifier = Modifier.scale(pulseScale.value),
+                                shape = RoundedCornerShape(50),
+                                color = Accent.copy(alpha = 0.15f)
                             ) {
-                                Text(text = stringResource(R.string.fire_emoji))
+                                Row(
+                                    modifier = Modifier.padding(
+                                        horizontal = 16.dp, vertical = 8.dp
+                                    ), verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(text = stringResource(R.string.fire_emoji))
 
-                                Spacer(Modifier.width(4.dp))
+                                    Spacer(Modifier.width(4.dp))
 
-                                AnimatedContent(
-                                    targetState = session.currentStreak, label = "streak_count"
-                                ) { streak ->
-                                    Text(
-                                        text = stringResource(R.string.streak_count, streak), fontWeight = FontWeight.Bold
-                                    )
+                                    AnimatedContent(
+                                        targetState = session.currentStreak, label = "streak_count"
+                                    ) { streak ->
+                                        Text(
+                                            text = stringResource(R.string.streak_count, streak),
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            item { Spacer(Modifier.height(20.dp)) }
+                item { Spacer(Modifier.height(20.dp)) }
 
-            item {
-                QuizProgressIndicator(
-                    statuses = session.questionStatuses, currentIndex = session.currentQuestionIndex
-                )
-            }
-
-            item { Spacer(Modifier.height(28.dp)) }
-
-            item {
-                QuestionCard(question.question)
-            }
-
-            item { Spacer(Modifier.height(28.dp)) }
-
-            itemsIndexed(question.options) { index, option ->
-                OptionButton(
-                    text = option,
-                    optionLetter = ('A' + index).toString(),
-                    enabled = !uiState.showAnswerOverlay,
-                    isSelected = uiState.answerResult?.selectedOptionIndex == index,
-                    isCorrect = uiState.answerResult?.correctOptionIndex == index,
-                    onClick = { onAnswerClick(index) })
-                Spacer(Modifier.height(14.dp))
-            }
-
-            item {
-                TextButton(
-                    onClick = onSkipClick,
-                    enabled = !uiState.showAnswerOverlay,
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.onBackground
-                    )
-                ) {
-                    Text(
-                        stringResource(R.string.skip_question_button),
-                        style = MaterialTheme.typography.bodyMedium
+                item {
+                    QuizProgressIndicator(
+                        statuses = session.questionStatuses,
+                        currentIndex = session.currentQuestionIndex
                     )
                 }
 
-                Spacer(Modifier.height(20.dp))
+                item { Spacer(Modifier.height(28.dp)) }
+
+                item {
+                    QuestionCard(question.question)
+                }
+
+                item { Spacer(Modifier.height(28.dp)) }
+
+                itemsIndexed(question.options) { index, option ->
+                    OptionButton(
+                        text = option,
+                        optionLetter = ('A' + index).toString(),
+                        enabled = !uiState.showAnswerOverlay,
+                        isSelected = uiState.answerResult?.selectedOptionIndex == index,
+                        isCorrect = uiState.answerResult?.correctOptionIndex == index,
+                        onClick = { onAnswerClick(index) })
+                    Spacer(Modifier.height(14.dp))
+                }
+
+                item {
+                    TextButton(
+                        onClick = onSkipClick,
+                        enabled = !uiState.showAnswerOverlay,
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onBackground
+                        )
+                    ) {
+                        Text(
+                            stringResource(R.string.skip_question_button),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+
+                    Spacer(Modifier.height(20.dp))
+                }
             }
+            if (uiState.showResumeBanner) {
+                ResumeBanner(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 70.dp)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ResumeBanner(
+    modifier: Modifier = Modifier
+) {
+    AnimatedVisibility(
+        visible = true,
+        modifier = modifier,
+        enter = slideInVertically() + fadeIn(),
+        exit = slideOutVertically() + fadeOut()
+    ) {
+
+        Surface(
+            shape = RoundedCornerShape(50),
+            color = MaterialTheme.colorScheme.primaryContainer,
+            shadowElevation = 4.dp
+        ) {
+
+            Text(
+                text = "Welcome back! Resuming your quiz", modifier = Modifier.padding(
+                    horizontal = 18.dp, vertical = 10.dp
+                ), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium
+            )
         }
     }
 }

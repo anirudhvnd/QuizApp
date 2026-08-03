@@ -5,8 +5,7 @@ plugins {
 
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
-
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -63,7 +62,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.hilt.navigation.compose)
 
@@ -71,8 +70,10 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-}
 
-kapt {
-    correctErrorTypes = true
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+
+    ksp(libs.room.compiler)
+    implementation(libs.androidx.datastore)
 }

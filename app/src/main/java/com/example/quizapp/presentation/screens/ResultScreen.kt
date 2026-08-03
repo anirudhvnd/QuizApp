@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,7 +37,7 @@ fun ResultScreen(
     onRestart: () -> Unit,
     viewModel: ResultViewModel = hiltViewModel()
 ) {
-    val result = viewModel.result
+    val result = viewModel.result.collectAsState().value
 
     Column(
         modifier = Modifier
@@ -78,18 +79,22 @@ fun ResultScreen(
 
         Spacer(modifier = Modifier.height(36.dp))
 
-        Text(
-            text = stringResource(R.string.result_percentage, result.percentage),
-            style = MaterialTheme.typography.displayLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
+        result?.percentage?.let {
+            Text(
+                text = stringResource(R.string.result_percentage, it),
+                style = MaterialTheme.typography.displayLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
 
-        Text(
-            text = stringResource(R.string.result_score, result.correctAnswers, 10),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        result?.correctAnswers?.let {
+            Text(
+                text = stringResource(R.string.result_score, it, 10),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
 
         Spacer(modifier = Modifier.height(36.dp))
 
@@ -106,26 +111,26 @@ fun ResultScreen(
             ) {
                 ResultItem(
                     stringResource(R.string.result_label_correct),
-                    result.correctAnswers.toString(),
+                    result?.correctAnswers.toString(),
                     MaterialTheme.colorScheme.primary
                 )
 
                 ResultItem(
                     stringResource(R.string.result_label_wrong),
-                    result.wrongAnswers.toString(),
+                    result?.wrongAnswers.toString(),
                     MaterialTheme.colorScheme.error
 
                 )
 
                 ResultItem(
                     stringResource(R.string.result_label_skipped),
-                    result.skippedQuestions.toString(),
+                    result?.skippedQuestions.toString(),
                     MaterialTheme.colorScheme.primary
                 )
 
                 ResultItem(
                     stringResource(R.string.result_label_best_streak),
-                    result.longestStreak.toString(),
+                    result?.longestStreak.toString(),
                     MaterialTheme.colorScheme.primary
                 )
             }
@@ -135,7 +140,10 @@ fun ResultScreen(
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = onRestart,
+            onClick = {
+                viewModel.clearSession()
+                onRestart()
+            },
             shape = RoundedCornerShape(18.dp)
         ) {
             Text(

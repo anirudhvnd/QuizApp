@@ -7,7 +7,7 @@ import javax.inject.Inject
 class SubmitAnswerUseCase @Inject constructor(
     private val repository: QuizRepository
 ) {
-    operator fun invoke(selectedIndex: Int): AnswerResult {
+    suspend operator fun invoke(selectedIndex: Int): AnswerResult {
         return repository.submitAnswer(selectedIndex)
     }
 }

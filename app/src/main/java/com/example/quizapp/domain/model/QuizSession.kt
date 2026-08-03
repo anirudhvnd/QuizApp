@@ -1,5 +1,8 @@
 package com.example.quizapp.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class QuizSession(
     val questions: List<Question>,
     val currentQuestionIndex: Int,
@@ -8,5 +11,7 @@ data class QuizSession(
     val skippedQuestions: Int,
     val currentStreak: Int,
     val longestStreak: Int,
-    val questionStatuses: List<QuestionStatus>
+    val questionStatuses: List<QuestionStatus>,
+    val hasStarted: Boolean = false,
+    val hasAnswered: Boolean = false,
 )

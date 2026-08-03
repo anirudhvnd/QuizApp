@@ -1,5 +1,6 @@
 package com.example.quizapp.di
 
+import com.example.quizapp.data.local.preferences.QuizSessionDataSource
 import com.example.quizapp.data.network.ConnectivityChecker
 import com.example.quizapp.data.remote.QuizApi
 import com.example.quizapp.data.repository.QuizRepositoryImpl
@@ -26,9 +27,13 @@ object AppModule {
     @Singleton
     fun provideQuizRepository(
         api: QuizApi,
-        connectivityChecker: ConnectivityChecker
+        connectivityChecker: ConnectivityChecker,
+        sessionDataSource: QuizSessionDataSource
     ): QuizRepository {
-        return QuizRepositoryImpl(api,connectivityChecker)
+        return QuizRepositoryImpl(
+            api,
+            sessionDataSource,
+            connectivityChecker)
     }
 
     @Provides

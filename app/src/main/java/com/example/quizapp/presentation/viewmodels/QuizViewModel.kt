@@ -34,54 +34,75 @@ class QuizViewModel @Inject constructor(
     fun loadQuiz() {
         viewModelScope.launch {
             _uiState.value = QuizUiState.Loading
-            useCases.initializeQuiz().onSuccess {
+
+
+            useCases.initializeQuiz().onSuccess { result ->
+
                 _uiState.value = QuizUiState.Success(
-                    session = useCases.getQuizSession(),
+                    session = result.session,  showResumeBanner = result.isResumed
                 )
+                if (result.isResumed) {
+                    viewModelScope.launch {
+                        delay(3000.milliseconds)
+                        val current = _uiState.value as? QuizUiState.Success
+                        current?.let {
+                            _uiState.value = it.copy(
+                                showResumeBanner = false
+                            )
+                        }
+                    }
+                }
             }.onFailure { throwable ->
-                _uiState.value =
-                    QuizUiState.Error(
-                        throwable.toQuizError()
-                    )
+                _uiState.value = QuizUiState.Error(
+                    throwable.toQuizError()
+                )
             }
         }
     }
 
     fun onAnswerSelected(index: Int) {
-        val state = _uiState.value as? QuizUiState.Success ?: return
-        val answer = useCases.submitAnswer(index)
-
-        _uiState.value = state.copy(
-            session = useCases.getQuizSession(), answerResult = answer, showAnswerOverlay = true
-        )
 
         viewModelScope.launch {
+
+            val state = _uiState.value as? QuizUiState.Success ?: return@launch
+            val answer = useCases.submitAnswer(index)
+            val updatedSession = useCases.getQuizSession() ?: return@launch
+
+            _uiState.value = state.copy(
+                session = updatedSession, answerResult = answer, showAnswerOverlay = true, showResumeBanner = false
+            )
+
             delay(2000.milliseconds)
+
             if (useCases.hasNextQuestion()) {
                 useCases.moveToNextQuestion()
-                val current = _uiState.value as? QuizUiState.Success ?: return@launch
-                _uiState.value = current.copy(
-                    session = useCases.getQuizSession(),
-                    answerResult = null,
-                    showAnswerOverlay = false
+                val nextSession = useCases.getQuizSession() ?: return@launch
+
+                _uiState.value = state.copy(
+                    session = nextSession, answerResult = null, showAnswerOverlay = false, showResumeBanner = false
                 )
             } else {
-                _event.emit(QuizEvent.NavigateToResult)
+                _event.emit(
+                    QuizEvent.NavigateToResult
+                )
             }
         }
     }
 
     fun onSkip() {
-        val state = _uiState.value as? QuizUiState.Success ?: return
-        useCases.skipQuestion()
-        if (useCases.hasNextQuestion()) {
-            useCases.moveToNextQuestion()
-            _uiState.value = state.copy(
-                session = useCases.getQuizSession()
-            )
-        } else {
-            viewModelScope.launch {
-                _event.emit(QuizEvent.NavigateToResult)
+        viewModelScope.launch {
+            val state = _uiState.value as? QuizUiState.Success ?: return@launch
+            useCases.skipQuestion()
+            if (useCases.hasNextQuestion()) {
+                useCases.moveToNextQuestion()
+                val updatedSession = useCases.getQuizSession() ?: return@launch
+                _uiState.value = state.copy(
+                    session = updatedSession, showResumeBanner = false
+                )
+            } else {
+                _event.emit(
+                    QuizEvent.NavigateToResult
+                )
             }
         }
     }

@@ -6,7 +6,7 @@ import javax.inject.Inject
 class SkipQuestionUseCase @Inject constructor(
     private val repository: QuizRepository
 ) {
-    operator fun invoke() {
+    suspend operator fun invoke() {
         return repository.skipQuestion()
     }
 }

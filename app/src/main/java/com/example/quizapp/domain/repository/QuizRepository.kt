@@ -1,22 +1,25 @@
 package com.example.quizapp.domain.repository
 
 import com.example.quizapp.domain.model.AnswerResult
+import com.example.quizapp.domain.model.QuizLoadResult
 import com.example.quizapp.domain.model.QuizResult
 import com.example.quizapp.domain.model.QuizSession
 
 interface QuizRepository {
 
-    suspend fun initializeQuiz(): Result<Unit>
+    suspend fun initializeQuiz(): Result<QuizLoadResult>
 
-    fun getQuizSession(): QuizSession
+    suspend fun getQuizSession(): QuizSession?
 
-    fun submitAnswer(selectedOptionIndex: Int): AnswerResult
+    suspend fun submitAnswer(selectedOptionIndex: Int): AnswerResult
 
-    fun skipQuestion()
+    suspend fun skipQuestion()
 
-    fun moveToNextQuestion()
+    suspend fun moveToNextQuestion()
 
-    fun getQuizResult(): QuizResult
+    suspend fun getQuizResult(): QuizResult
 
-    fun hasNextQuestion(): Boolean
+    suspend fun hasNextQuestion(): Boolean
+
+    suspend fun clearSession()
 }

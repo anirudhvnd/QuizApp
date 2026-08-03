@@ -1,5 +1,8 @@
 package com.example.quizapp.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Question(
     val id: Int,
     val question: String,
