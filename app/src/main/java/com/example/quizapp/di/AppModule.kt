@@ -1,7 +1,7 @@
 package com.example.quizapp.di
 
-import android.content.Context
-import com.example.quizapp.data.local.QuestionJsonParser
+import com.example.quizapp.data.network.ConnectivityChecker
+import com.example.quizapp.data.remote.QuizApi
 import com.example.quizapp.data.repository.QuizRepositoryImpl
 import com.example.quizapp.domain.repository.QuizRepository
 import com.example.quizapp.domain.usecase.GetQuizResultUseCase
@@ -15,7 +15,6 @@ import com.example.quizapp.domain.usecase.SubmitAnswerUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -25,18 +24,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideQuestionJsonParser(
-        @ApplicationContext context: Context
-    ): QuestionJsonParser {
-        return QuestionJsonParser(context)
-    }
-
-    @Provides
-    @Singleton
     fun provideQuizRepository(
-        parser: QuestionJsonParser
+        api: QuizApi,
+        connectivityChecker: ConnectivityChecker
     ): QuizRepository {
-        return QuizRepositoryImpl(parser)
+        return QuizRepositoryImpl(api,connectivityChecker)
     }
 
     @Provides

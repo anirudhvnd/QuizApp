@@ -2,6 +2,8 @@ package com.example.quizapp.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.quizapp.data.network.NoInternetException
+import com.example.quizapp.domain.model.QuizError
 import com.example.quizapp.domain.usecase.QuizUseCases
 import com.example.quizapp.presentation.state.QuizUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,7 +13,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
@@ -28,12 +32,18 @@ class QuizViewModel @Inject constructor(
     }
 
     fun loadQuiz() {
-        useCases.initializeQuiz().onSuccess {
-            _uiState.value = QuizUiState.Success(
-                session = useCases.getQuizSession(),
-            )
-        }.onFailure {
-            _uiState.value = QuizUiState.Error
+        viewModelScope.launch {
+            _uiState.value = QuizUiState.Loading
+            useCases.initializeQuiz().onSuccess {
+                _uiState.value = QuizUiState.Success(
+                    session = useCases.getQuizSession(),
+                )
+            }.onFailure { throwable ->
+                _uiState.value =
+                    QuizUiState.Error(
+                        throwable.toQuizError()
+                    )
+            }
         }
     }
 
@@ -46,7 +56,7 @@ class QuizViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            delay(2000)
+            delay(2000.milliseconds)
             if (useCases.hasNextQuestion()) {
                 useCases.moveToNextQuestion()
                 val current = _uiState.value as? QuizUiState.Success ?: return@launch
@@ -74,5 +84,20 @@ class QuizViewModel @Inject constructor(
                 _event.emit(QuizEvent.NavigateToResult)
             }
         }
+    }
+}
+
+private fun Throwable.toQuizError(): QuizError {
+    return when (this) {
+        is NoInternetException ->
+            QuizError.NoInternet
+
+        is HttpException ->
+            QuizError.ServerError
+
+        else ->
+            QuizError.Unknown(
+                message ?: "Unknown error"
+            )
     }
 }

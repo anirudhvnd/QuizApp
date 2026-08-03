@@ -52,6 +52,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.quizapp.R
 import com.example.quizapp.domain.model.Question
+import com.example.quizapp.domain.model.QuizError
 import com.example.quizapp.domain.model.QuizSession
 import com.example.quizapp.presentation.screens.components.ErrorScreen
 import com.example.quizapp.presentation.screens.components.LoadingScreen
@@ -89,9 +90,33 @@ fun QuizScreen(
             onSkipClick = viewModel::onSkip
         )
 
-        QuizUiState.Error -> ErrorScreen(
-            onRetry = { viewModel.loadQuiz() }
-        )
+        is QuizUiState.Error -> {
+            val (title, message) = when (state.error) {
+
+                QuizError.NoInternet -> {
+                    "No Internet Connection" to
+                            "Please connect to the internet and try again."
+                }
+
+                QuizError.ServerError -> {
+                    "Unable to Load Quiz" to
+                            "We're having trouble reaching the server right now."
+                }
+
+                is QuizError.Unknown -> {
+                    "Something Went Wrong" to
+                            (state.error.message.ifBlank {
+                                "An unexpected error occurred."
+                            })
+                }
+            }
+
+            ErrorScreen(
+                title = title,
+                message = message,
+                onRetry = viewModel::loadQuiz
+            )
+        }
     }
 }
 

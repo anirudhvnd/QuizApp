@@ -6,7 +6,7 @@ import javax.inject.Inject
 class InitializeQuizUseCase @Inject constructor(
     private val repository: QuizRepository
 ) {
-    operator fun invoke(): Result<Unit> {
+    suspend operator fun invoke(): Result<Unit> {
         return repository.initializeQuiz()
     }
 }

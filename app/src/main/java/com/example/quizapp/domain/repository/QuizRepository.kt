@@ -6,7 +6,7 @@ import com.example.quizapp.domain.model.QuizSession
 
 interface QuizRepository {
 
-    fun initializeQuiz(): Result<Unit>
+    suspend fun initializeQuiz(): Result<Unit>
 
     fun getQuizSession(): QuizSession
 

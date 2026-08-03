@@ -1,6 +1,7 @@
 package com.example.quizapp.presentation.state
 
 import com.example.quizapp.domain.model.AnswerResult
+import com.example.quizapp.domain.model.QuizError
 import com.example.quizapp.domain.model.QuizSession
 
 sealed interface QuizUiState {
@@ -12,5 +13,7 @@ sealed interface QuizUiState {
         val showAnswerOverlay: Boolean = false
     ) : QuizUiState
 
-    data object Error : QuizUiState
+    data class Error(
+        val error: QuizError
+    ) : QuizUiState
 }

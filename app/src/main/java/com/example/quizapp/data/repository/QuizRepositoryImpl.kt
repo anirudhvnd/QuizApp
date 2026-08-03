@@ -1,7 +1,9 @@
 package com.example.quizapp.data.repository
 
-import com.example.quizapp.data.local.QuestionJsonParser
 import com.example.quizapp.data.mapper.toDomain
+import com.example.quizapp.data.network.ConnectivityChecker
+import com.example.quizapp.data.network.NoInternetException
+import com.example.quizapp.data.remote.QuizApi
 import com.example.quizapp.domain.model.AnswerResult
 import com.example.quizapp.domain.model.QuestionStatus
 import com.example.quizapp.domain.model.QuizResult
@@ -10,14 +12,18 @@ import com.example.quizapp.domain.repository.QuizRepository
 import javax.inject.Inject
 
 class QuizRepositoryImpl @Inject constructor(
-    private val parser: QuestionJsonParser
+    private val api: QuizApi,
+    private val connectivityChecker: ConnectivityChecker
 ) : QuizRepository {
     private lateinit var session: QuizSession
 
-    override fun initializeQuiz(): Result<Unit> {
+    override suspend fun initializeQuiz(): Result<Unit> {
         return runCatching {
-            val questions = parser
-                .loadQuestions()
+            if (!connectivityChecker.isConnected()) {
+                throw NoInternetException()
+            }
+            val questions = api
+                .getQuestions()
                 .map { it.toDomain() }
 
             session = QuizSession(
